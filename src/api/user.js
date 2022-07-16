@@ -27,3 +27,14 @@ export const sendCode = (mobile) => {
     url: `/v1_0/sms/codes/${mobile}`
   })
 }
+
+/**
+ * 请求用户自己的信息
+ * @returns Promise
+ */
+export const getUserInfo = () => {
+  // url methods headers
+  return request({
+    url: '/v1_0/user'
+  })
+}

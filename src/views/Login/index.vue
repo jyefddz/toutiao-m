@@ -11,7 +11,7 @@
     </van-nav-bar>
     <!-- 手机号/验证码登录 -->
     <!-- form里的input 必须给name 用于标识 -->
-    <van-form ref="form" class="form" @submit="login">
+    <van-form ref="form" class="form">
       <van-field
         v-model="mobile"
         name="mobile"
@@ -55,9 +55,7 @@
       </van-field>
       <!-- 登录按钮 -->
       <div style="margin: 16px">
-        <van-button block type="info" native-type="submit" @click="login"
-          >登录</van-button
-        >
+        <van-button block type="info" native-type="submit" @click="login">登录</van-button>
       </div>
     </van-form>
   </div>
@@ -135,7 +133,7 @@ export default {
       } catch (err) {
         // 1.表单校验失败
         if (!err.response) {
-          this.$toast.fail('请输入手机号')
+          this.$toast.fail('请输入正确的手机号')
         } else {
           // 2.请求失败
           // 404
