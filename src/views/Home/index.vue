@@ -21,12 +21,24 @@
     </van-tabs>
 
     <!-- 弹框 -->
-    <EditChannelPopup ref="popup" :myChannels="myChannels"></EditChannelPopup>
+    <EditChannelPopup
+      ref="popup"
+      :myChannels="myChannels"
+      @del-mychannel="delMyChannle"
+      @change-active="changeActive"
+      @add-mychannel="addMyChannel"
+    ></EditChannelPopup>
   </div>
 </template>
 
 <script>
-import { getMyChannels } from '@/api'
+import {
+  getMyChannels,
+  delMyChannle,
+  addMyChannel,
+  getMyChannelsByLocal,
+  setMyChannelsToLocal
+} from '@/api'
 // 引入组件
 import ArticleList from './component/ArticleList.vue'
 import EditChannelPopup from './component/EditChannelPopup.vue'
@@ -46,18 +58,83 @@ export default {
     // 获取我的频道列表
     this.getMyChannels()
   },
+  computed: {
+    isLogin() {
+      return !!this.$store.state.user.token
+    }
+  },
   methods: {
     async getMyChannels() {
       // res一定有data
+      // 如果你是登录状态
+      // 发请求获取
+      // 如果是离线状态
+      // 1 如果本地有数据,直接用本地数据
+      // 2 如果本地没有数据,发送请求获取默认频道
       try {
-        const { data } = await getMyChannels()
-        this.myChannels = data.data.channels
+        if (!this.isLogin) {
+          const myChannels = getMyChannelsByLocal()
+          if (myChannels) {
+            // 1 如果本地有数据,直接用本地数据
+            this.myChannels = myChannels
+          } else {
+            // 2 如果本地没有数据,发送请求获取默认频道
+            const { data } = await getMyChannels()
+            this.myChannels = data.data.channels
+          }
+        } else {
+          // 如果你是登录状态
+          // 发请求获取
+          const { data } = await getMyChannels()
+          this.myChannels = data.data.channels
+        }
       } catch (err) {
         this.$toast.fail('请重新获取频道列表')
       }
     },
     showPop() {
       this.$refs.popup.isShow = true
+    },
+    // 删除我的频道
+    async delMyChannle(id) {
+      this.myChannels = this.myChannels.filter((item) => item.id !== id)
+
+      if (!this.isLogin) {
+        // 如果是离线状态
+        // 数据存储在本地存储中
+        setMyChannelsToLocal(this.myChannels)
+      } else {
+        try {
+          // 如果是登录状态
+          // 发送接口 删除频道
+          await delMyChannle(id)
+        } catch (error) {
+          return this.$toast.fail('删除失败')
+        }
+      }
+      this.$toast.success('删除成功')
+    },
+    // 更改频道的active
+    changeActive(active) {
+      this.active = active
+    },
+    // 添加频道
+    async addMyChannel(channel) {
+      this.myChannels.push(channel)
+      if (!this.isLogin) {
+        // 如果是离线状态
+        // 数据存储在本地存储中
+        setMyChannelsToLocal(this.myChannels)
+      } else {
+        // 如果是登录状态
+        // 发送接口 删除频道
+        try {
+          await addMyChannel(channel.id, this.myChannels.length)
+        } catch (error) {
+          return this.$toast.fail('添加频道失败')
+        }
+      }
+      this.$toast.success('添加成功')
     }
   }
 }

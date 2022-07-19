@@ -1,5 +1,5 @@
 export * from '@/api/user'
 
-export * from './channel'
+export * from '@/api/channel'
 
 export * from './news'

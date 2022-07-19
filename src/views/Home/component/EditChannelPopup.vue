@@ -12,17 +12,28 @@
       <div class="my-channel">
         <!-- 我的频道标题 -->
         <van-cell title="我的频道">
-          <van-button class="edit-btn" size="small" round>编辑</van-button>
+          <van-button
+            class="edit-btn"
+            size="small"
+            round
+            @click="isEdit = !isEdit"
+            >{{ isEdit ? '完成' : '编辑' }}</van-button
+          >
         </van-cell>
         <!-- 我的频道宫格 -->
         <van-grid :border="false" gutter="10px">
           <van-grid-item
-            v-for="item in myChannels"
-            :key="item.id"
+            v-for="(item, index) in myChannels"
+            :key="index"
             :text="item.name"
+            :class="{ 'active-channel': item.name === '推荐' }"
+            @click="onClickMyChannel(item, index)"
           >
             <template #icon>
-              <van-icon name="cross"></van-icon>
+              <van-icon
+                v-show="isEdit && item.name !== '推荐'"
+                name="cross"
+              ></van-icon>
             </template>
           </van-grid-item>
         </van-grid>
@@ -33,12 +44,14 @@
         <!-- 推荐频道标题 -->
         <van-cell title="推荐频道"></van-cell>
         <!-- 推荐频道宫格 -->
+        <!-- :class="{添加的类名:boolen}" -->
         <van-grid :border="false" gutter="10px">
           <van-grid-item
             v-for="item in recommendChannels"
             :key="item.id"
             :text="item.name"
             icon="plus"
+            @click="addMyChannel(item)"
           ></van-grid-item>
         </van-grid>
       </div>
@@ -58,7 +71,9 @@ export default {
   data() {
     return {
       isShow: false,
-      allChannels: []
+      allChannels: [],
+      //   用于标记是否处于编辑状态
+      isEdit: false
     }
   },
   props: {
@@ -76,6 +91,26 @@ export default {
       const { data } = await getAllChannels()
       this.allChannels = data.data.channels
       console.log(data)
+    },
+    // 点击我的频道
+    // props 什么时候不能修改? 基本数据类型,完全不能修改
+    // 复杂数据类型:arr ,obj, vue也是不建议修改
+    onClickMyChannel(channel, index) {
+      // 编辑情况的判断
+      if (this.isEdit && channel.name !== '推荐') {
+        // 删除
+        return this.$emit('del-mychannel', channel.id)
+      }
+      if (!this.isEdit) {
+        // 切换
+        this.isShow = false
+        this.$emit('change-active', index)
+      }
+    },
+    // 添加频道
+    // { ...myChannel } 对象的浅克隆
+    addMyChannel(myChannel) {
+      this.$emit('add-mychannel', { ...myChannel })
     }
   },
   computed: {
@@ -131,6 +166,12 @@ export default {
           width: 24px;
           font-size: 24px;
         }
+      }
+    }
+    // 高亮频道
+    .active-channel {
+      :deep(.van-grid-item__text) {
+        color: red;
       }
     }
   }
