@@ -73,7 +73,7 @@
       <!-- 历史和搜索 -->
       <div>
         <van-grid column-num="2" class="grid" clickable>
-          <van-grid-item icon="photo-o" text="收藏">
+          <van-grid-item text="收藏">
             <template #icon>
               <span class="toutiao toutiao-shoucang"></span>
             </template>

@@ -1,0 +1,11 @@
+// 引入dayjs
+import dayjs from 'dayjs'
+// 配置相对时间
+// 封装 ==> new Date('2010-11-1')
+const relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+// 配置中文包
+require('dayjs/locale/zh-cn')
+dayjs.locale('zh-cn') // 全局使用简体中文
+
+export default dayjs

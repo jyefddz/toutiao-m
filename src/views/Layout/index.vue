@@ -40,6 +40,9 @@ export default {}
 </script>
 
 <style scoped lang="less">
+// .van-tabbar--fixed{
+//   margin-top: 100px;
+// }
 :deep(.van-tabbar-item__icon) {
   display: flex;
   flex-direction: column;

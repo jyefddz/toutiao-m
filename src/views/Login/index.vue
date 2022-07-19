@@ -55,7 +55,9 @@
       </van-field>
       <!-- 登录按钮 -->
       <div style="margin: 16px">
-        <van-button block type="info" native-type="submit" @click="login">登录</van-button>
+        <van-button block type="info" native-type="submit" @click="login"
+          >登录</van-button
+        >
       </div>
     </van-form>
   </div>
@@ -109,6 +111,7 @@ export default {
         const res = await login(this.mobile, this.code)
         // 存储token
         this.$store.commit('setUser', res.data.data)
+        console.log(res)
         this.$toast.success('登录成功')
         this.$router.push('/profile')
       } catch (err) {
