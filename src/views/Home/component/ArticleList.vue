@@ -81,7 +81,7 @@ export default {
           throw new Error('错误了')
         }
         const { data } = await getArticleList(this.id, this.pre_timestamp)
-
+        console.log(data)
         if (!data.data.pre_timestamp) {
           this.isFinished = true
         }

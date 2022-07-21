@@ -18,7 +18,13 @@
     <!-- <SearchHistory></SearchHistory>
     <SearchResult></SearchResult>
     <SearchSuggestion></SearchSuggestion> -->
-    <component :is="componentName" :keywords="keywords"></component>
+    <component
+      :is="componentName"
+      :keywords="keywords"
+      :searchHistories="searchHistories"
+      @clearHistory="searchHistories = []"
+      @search="onSearch"
+    ></component>
   </div>
 </template>
 
@@ -26,6 +32,7 @@
 import SearchHistory from './components/SearchHistory.vue'
 import SearchSuggestion from './components/SearchSuggestion.vue'
 import SearchResult from './components/SearchResult.vue'
+import { setHistoryToLocal, getHistoryByLocal } from '@/api'
 export default {
   components: {
     SearchHistory,
@@ -35,7 +42,8 @@ export default {
   data() {
     return {
       keywords: '',
-      isShowSearchResult: false
+      isShowSearchResult: false,
+      searchHistories: getHistoryByLocal() || []
     }
   },
   computed: {
@@ -51,11 +59,23 @@ export default {
       return 'SearchSuggestion'
     }
   },
+  watch: {
+    searchHistories(value) {
+      setHistoryToLocal(value)
+    }
+  },
   methods: {
     // 搜索
-    onSearch() {
+    onSearch(val) {
+      this.keywords = val
+      const index = this.searchHistories.indexOf(val)
+      console.log(this.searchHistories)
+      console.log(val)
+      if (index !== -1) {
+        this.searchHistories.splice(index, 1)
+      }
+      this.searchHistories.unshift(val)
       this.isShowSearchResult = true
-      console.log('正在搜索')
     },
     // 返回上一页
     backTopPage() {
