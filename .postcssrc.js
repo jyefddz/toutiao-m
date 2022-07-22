@@ -16,7 +16,8 @@ module.exports = {
       rootValue: (module) => (/vant/gi.test(module.file) ? 37.5 : 75),
 
       //   适配的属性
-      propList: ['*']
+      propList: ['*'],
+      exclude: 'github-markdown-css'
     }
   }
 }

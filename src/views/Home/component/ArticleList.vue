@@ -18,6 +18,7 @@
           v-for="item in articles"
           :key="item.art_id"
           :articleInfo="item"
+          @click="seeDetail(item.art_id)"
         ></ArticleItem>
       </van-list>
     </van-pull-refresh>
@@ -64,6 +65,7 @@ export default {
         const { data } = await getArticleList(this.id, +new Date())
         this.pre_timestamp = data.data.pre_timestamp
         this.articles = data.data.results
+        console.log(data.data.results)
       } catch (err) {
         // 获取状态码
         const status = err.response.status
@@ -102,6 +104,14 @@ export default {
         this.loading = false
         this.refreshLoading = false
       }
+    },
+    seeDetail(id) {
+      console.log(id)
+      localStorage.setItem('art_id', id)
+      this.$router.push({
+        path: '/detail',
+        query: { id }
+      })
     }
   }
 }
