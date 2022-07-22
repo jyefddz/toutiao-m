@@ -58,6 +58,8 @@
           v-html="articleDetailInfo.content"
         ></div>
         <van-divider>正文结束</van-divider>
+        <!-- 文章评论 -->
+        <ArtComment></ArtComment>
       </div>
       <!-- /加载完成-文章详情 -->
     </div>
@@ -80,12 +82,12 @@
       />
       <van-icon color="#777" name="star-o" v-else @click="onCollect" />
       <van-icon
-        color="#777"
-        name="good-job-o"
-        v-if="articleDetailInfo.attitude === -1"
+        color="#ed6a55"
+        name="good-job"
+        v-if="articleDetailInfo.attitude === 1"
         @click="onLiking"
       />
-      <van-icon color="#ed6a55" name="good-job" v-else @click="onLiking" />
+      <van-icon color="#777" name="good-job-o" v-else @click="onLiking" />
       <van-icon name="share" color="#777777"></van-icon>
     </div>
     <!-- /底部区域 -->
@@ -98,14 +100,20 @@ import {
   addFocus,
   delFocus,
   addCollect,
-  delCollect
+  delCollect,
+  addLiking,
+  delLiking
 } from '@/api'
 import dayjs from '@/utils/dayjs'
+import ArtComment from './components/ArtComment'
 export default {
   data() {
     return {
       articleDetailInfo: []
     }
+  },
+  components: {
+    ArtComment
   },
   methods: {
     // 返回上一页
@@ -137,11 +145,11 @@ export default {
       try {
         // 已收藏,点击取消收藏
         if (this.articleDetailInfo.is_collected) {
-          await delCollect(this.articleDetailInfo.aut_id)
+          await delCollect(this.articleDetailInfo.art_id)
           this.articleDetailInfo.is_collected = false
         } else {
           // 未收藏,添加收藏
-          await addCollect(this.articleDetailInfo.aut_id)
+          await addCollect(this.articleDetailInfo.art_id)
           this.articleDetailInfo.is_collected = true
           this.$toast('收藏成功')
         }
@@ -151,13 +159,13 @@ export default {
     },
     async onLiking() {
       try {
-        if (this.articleDetailInfo.attitude === -1) {
-          await delCollect(this.articleDetailInfo.aut_id)
-          this.articleDetailInfo.attitude = 0
-          this.$toast('已点赞')
-        } else {
-          await addCollect(this.articleDetailInfo.aut_id)
+        if (this.articleDetailInfo.attitude === 1) {
+          await delLiking(this.articleDetailInfo.art_id)
           this.articleDetailInfo.attitude = -1
+        } else {
+          await addLiking(this.articleDetailInfo.art_id)
+          this.articleDetailInfo.attitude = 1
+          this.$toast('已点赞')
         }
       } catch (err) {
         this.$toast('操作失败,请重试!')
