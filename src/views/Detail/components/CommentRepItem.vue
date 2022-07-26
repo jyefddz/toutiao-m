@@ -97,7 +97,7 @@ export default {
           offset: this.offset,
           limit: this.limit
         })
-        console.log(data)
+        // console.log(data)
         const { results } = data.data
         this.commentRepListInfo.push(...results)
         this.loading = false

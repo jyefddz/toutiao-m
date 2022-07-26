@@ -65,7 +65,7 @@ export default {
         const { data } = await getArticleList(this.id, +new Date())
         this.pre_timestamp = data.data.pre_timestamp
         this.articles = data.data.results
-        console.log(data.data.results)
+        // console.log(data.data.results)
       } catch (err) {
         // 获取状态码
         const status = err.response.status

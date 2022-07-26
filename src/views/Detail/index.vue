@@ -71,7 +71,6 @@
             v-for="(item, index) in commentListInfo"
             :key="index"
             :comment="item"
-            :source="item.com_id"
             @repCommentClick="onRepCommentClick"
           />
         </van-list>
@@ -254,7 +253,7 @@ export default {
           offset: this.offset,
           limit: this.limit
         })
-        console.log(data)
+        // console.log(data)
         const { results } = data.data
         this.commentListInfo.push(...results)
         this.loading = false
@@ -269,6 +268,7 @@ export default {
       }
     },
     onPostSuccess(data) {
+      this.articleDetailInfo.comm_count++
       this.isPopShow = false
       this.commentListInfo.unshift(data.new_obj)
     },

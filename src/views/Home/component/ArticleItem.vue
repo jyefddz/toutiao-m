@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     seeDetail(id) {
-      console.log(id)
+      // console.log(id)
       localStorage.setItem('art_id', id)
       this.$router.push({
         path: '/detail',
